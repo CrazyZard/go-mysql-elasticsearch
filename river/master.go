@@ -2,6 +2,8 @@ package river
 
 import (
 	"bytes"
+	"github.com/go-mysql-org/go-mysql/mysql"
+	"github.com/siddontang/go/ioutil2"
 	"os"
 	"path"
 	"sync"
@@ -10,8 +12,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/juju/errors"
 	"github.com/siddontang/go-log/log"
-	"github.com/siddontang/go-mysql/mysql"
-	"github.com/siddontang/go/ioutil2"
 )
 
 type masterInfo struct {

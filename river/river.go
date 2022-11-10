@@ -3,14 +3,15 @@ package river
 import (
 	"context"
 	"fmt"
+	"github.com/go-mysql-org/go-mysql/canal"
 	"regexp"
 	"strings"
 	"sync"
 
 	"github.com/juju/errors"
 	"github.com/siddontang/go-log/log"
-	"github.com/siddontang/go-mysql-elasticsearch/elastic"
-	"github.com/siddontang/go-mysql/canal"
+
+	"github.com/CrazyZard/go-mysql-elasticsearch/elastic"
 )
 
 // ErrRuleNotExist is the error if rule is not defined.

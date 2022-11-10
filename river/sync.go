@@ -8,20 +8,21 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CrazyZard/go-mysql-elasticsearch/elastic"
+	"github.com/go-mysql-org/go-mysql/canal"
+	"github.com/go-mysql-org/go-mysql/mysql"
+	"github.com/go-mysql-org/go-mysql/replication"
+	"github.com/go-mysql-org/go-mysql/schema"
 	"github.com/juju/errors"
 	"github.com/siddontang/go-log/log"
-	"github.com/siddontang/go-mysql-elasticsearch/elastic"
-	"github.com/siddontang/go-mysql/canal"
-	"github.com/siddontang/go-mysql/mysql"
-	"github.com/siddontang/go-mysql/replication"
-	"github.com/siddontang/go-mysql/schema"
 )
 
 const (
 	fieldTypeList = "list"
 	// for the mysql int type to es date type
 	// set the [rule.field] created_time = ",date"
-	fieldTypeDate = "date"
+	fieldTypeDate    = "date"
+	fieldTypeBoolean = "bool"
 )
 
 const mysqlDateFormat = "2006-01-02"
@@ -498,7 +499,6 @@ func (r *River) getFieldValue(col *schema.TableColumn, fieldType string, value i
 		} else {
 			fieldValue = v
 		}
-
 	case fieldTypeDate:
 		if col.Type == schema.TYPE_NUMBER {
 			col.Type = schema.TYPE_DATETIME
@@ -507,6 +507,15 @@ func (r *River) getFieldValue(col *schema.TableColumn, fieldType string, value i
 			switch v.Kind() {
 			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 				fieldValue = r.makeReqColumnData(col, time.Unix(v.Int(), 0).Format(mysql.TimeFormat))
+			}
+		}
+	case fieldTypeBoolean:
+		fieldValue = false
+		v := reflect.ValueOf(value)
+		switch v.Kind() {
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			if v.Int() == 1 {
+				fieldValue = true
 			}
 		}
 	}
